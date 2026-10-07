@@ -26,7 +26,7 @@ const TabHeader: FC<ITabHeaderProps> = ({
   const renderItem = ({ id, name, extra }: Item) => (
     <div
       key={id}
-      className={cn(id === value ? `${s.itemActive} text-gray-900` : 'text-gray-500', 'relative flex items-center pb-1.5 leading-6 cursor-pointer')}
+      className={cn(id === value ? `${s.itemActive} text-white` : 'text-gray-500 hover:text-gray-300', 'relative flex items-center pb-1.5 leading-6 cursor-pointer')}
       onClick={() => onChange(id)}
     >
       <div className='text-base font-semibold'>{name}</div>
@@ -34,7 +34,7 @@ const TabHeader: FC<ITabHeaderProps> = ({
     </div>
   )
   return (
-    <div className='flex justify-between border-b border-gray-200 '>
+    <div className='flex justify-between border-b border-white/10 '>
       <div className='flex space-x-4'>
         {items.filter(item => !item.isRight).map(renderItem)}
       </div>

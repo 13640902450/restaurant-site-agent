@@ -372,14 +372,15 @@ const TextGeneration = () => {
 
   useEffect(() => {
     if (APP_INFO?.title)
-      document.title = `${APP_INFO.title} - Powered by Dify`
+      document.title = APP_INFO.title
   }, [APP_INFO?.title])
 
   const [isShowResSidebar, { setTrue: showResSidebar, setFalse: hideResSidebar }] = useBoolean(false)
   const resRef = useRef<HTMLDivElement>(null)
+  // 监听 mousedown 而非 click：click 阶段打开侧栏后再冒泡到 document 会被判为“点击外部”而立即关闭
   useClickAway(() => {
     hideResSidebar()
-  }, resRef)
+  }, resRef, 'mousedown')
 
   const renderRes = (task?: Task) => (
     <Result
@@ -410,16 +411,21 @@ const TextGeneration = () => {
       ref={resRef}
       className={
         cn(
-          'flex flex-col h-full shrink-0',
-          isPC ? 'px-10 py-8' : 'bg-gray-50',
+          'flex flex-col h-full shrink-0 overflow-hidden',
+          isPC ? 'animate-fade-up animate-delay-2 glass rounded-[28px] px-8 py-7' : 'bg-[#0B0D12]',
           isTablet && 'p-6', isMobile && 'p-4')
       }
     >
       <>
-        <div className='shrink-0 flex items-center justify-between'>
-          <div className='flex items-center space-x-3'>
-            <div className={s.starIcon}></div>
-            <div className='text-lg text-gray-800 font-semibold'>{t('app.generation.title')}</div>
+        <div className='flex shrink-0 items-center justify-between border-b border-white/10 pb-4'>
+          <div className='flex items-center gap-3'>
+            <div className='flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/15'>
+              <div className={s.starIcon}></div>
+            </div>
+            <div>
+              <div className='text-lg font-bold leading-tight tracking-tight text-white'>{t('app.generation.title')}</div>
+              <div className='mt-0.5 text-[11px] text-gray-500'>AI 逐项推理 · 实时输出评估结论</div>
+            </div>
           </div>
           <div className='flex items-center space-x-2'>
             {allFailedTaskList.length > 0 && (
@@ -451,7 +457,7 @@ const TextGeneration = () => {
           </div>
         </div>
 
-        <div className='grow overflow-y-auto'>
+        <div className='grow min-h-0 overflow-y-auto pt-5'>
           {!isCallBatchAPI ? renderRes() : renderBatchRes()}
           {!noPendingTask && (
             <div className='mt-4'>
@@ -471,21 +477,42 @@ const TextGeneration = () => {
 
   return (
     <>
-      <div className={cn(isPC && 'flex', 'h-screen bg-gray-50')}>
+      <div className={cn(isPC && 'flex', 'relative h-screen overflow-hidden bg-transparent text-gray-100')}>
+        <div aria-hidden className='noise-overlay' />
+        <div aria-hidden className='animate-float-slow pointer-events-none absolute -left-24 -top-24 h-80 w-80 rounded-full bg-amber-500/10 blur-3xl' />
+        <div aria-hidden className='animate-float pointer-events-none absolute -bottom-28 right-10 h-96 w-96 rounded-full bg-indigo-500/10 blur-3xl' />
+        <div aria-hidden className='animate-float-slow pointer-events-none absolute left-1/2 top-1/3 h-72 w-72 -translate-x-1/2 rounded-full bg-emerald-500/[0.07] blur-3xl' />
         {/* Left */}
-        <div className={cn(isPC ? 'w-[600px] max-w-[50%] p-8' : 'p-4', 'shrink-0 relative flex flex-col pb-10 h-full border-r border-gray-100 bg-white')}>
-          <div className='mb-6'>
-            <div className='flex justify-between items-center'>
-              <div className='flex items-center space-x-3'>
-                <div className={cn(s.appIcon, 'shrink-0')}></div>
-                <div className='text-lg text-gray-800 font-semibold'>{APP_INFO.title}</div>
+        <div className={cn(
+          'relative z-10 shrink-0 flex flex-col',
+          isPC ? 'm-4 mr-0 h-[calc(100%-2rem)] w-[640px] max-w-[52%] rounded-[28px] glass p-6' : 'min-h-full bg-[#0B0D12]/95 p-4 pb-10',
+        )}>
+          {/* Hero */}
+          <div className='animate-fade-up relative shrink-0 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-amber-500/20 via-white/[0.04] to-transparent px-5 py-4 shadow-lg shadow-black/30'>
+            <div aria-hidden className='animate-float pointer-events-none absolute -right-10 -top-14 h-40 w-40 rounded-full bg-amber-400/20 blur-3xl' />
+            <div aria-hidden className='animate-float-slow pointer-events-none absolute -bottom-16 right-20 h-36 w-36 rounded-full bg-indigo-500/15 blur-3xl' />
+            <div aria-hidden className='absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-300/70 to-transparent' />
+            <div
+              aria-hidden
+              className='pointer-events-none absolute inset-0 opacity-[0.05]'
+              style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.9) 1px, transparent 0)', backgroundSize: '16px 16px' }}
+            />
+            <div className='relative flex items-start justify-between gap-3'>
+              <div className='flex items-center gap-3'>
+                <div className='flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/15'>
+                  <div className={s.appIcon}></div>
+                </div>
+                <div>
+                  <div className='text-[19px] font-bold leading-tight tracking-tight text-white'>{APP_INFO.title}</div>
+                  <div className='mt-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-amber-300/90'>Restaurant Site Intelligence</div>
+                </div>
               </div>
               {!isPC && (
                 <Button
-                  className='shrink-0 !h-8 !px-3'
+                  className='shrink-0 !h-9 !rounded-xl !border-white/20 !bg-white/10 !px-3 hover:!border-white/40 hover:!bg-white/15'
                   onClick={showResSidebar}
                 >
-                  <div className='flex items-center space-x-2 text-primary-600 text-[13px] font-medium'>
+                  <div className='flex items-center space-x-2 text-amber-300 text-[13px] font-medium'>
                     <div className={s.starIcon}></div>
                     <span>{t('app.generation.title')}</span>
                   </div>
@@ -493,21 +520,30 @@ const TextGeneration = () => {
               )}
             </div>
             {APP_INFO.description && (
-              <div className='mt-2 text-xs text-gray-500'>{APP_INFO.description}</div>
+              <p className='relative mt-3 text-[12.5px] leading-6 text-gray-300/90'>{APP_INFO.description}</p>
             )}
+            <div className='relative mt-3 flex flex-wrap gap-1.5'>
+              {['成本测算', '盈亏平衡', '客流压力', '商圈竞品'].map(item => (
+                <span key={item} className='rounded-full bg-white/[0.06] px-2.5 py-1 text-[11px] font-medium text-amber-100/90 ring-1 ring-inset ring-white/10'>
+                  {item}
+                </span>
+              ))}
+            </div>
           </div>
 
-          <TabHeader
-            items={[
-              { id: 'create', name: t('app.generation.tabs.create') },
-              { id: 'batch', name: t('app.generation.tabs.batch') },
-            ]}
-            value={currTab}
-            onChange={setCurrTab}
-          />
+          <div className='mt-5 shrink-0'>
+            <TabHeader
+              items={[
+                { id: 'create', name: t('app.generation.tabs.create') },
+                { id: 'batch', name: t('app.generation.tabs.batch') },
+              ]}
+              value={currTab}
+              onChange={setCurrTab}
+            />
+          </div>
 
-          <div className='grow h-20 overflow-y-auto'>
-            <div className={cn(currTab === 'create' ? 'block' : 'hidden')}>
+          <div className='flex min-h-0 grow flex-col overflow-y-auto'>
+            <div className={cn('grow flex-col', currTab === 'create' ? 'flex' : 'hidden')}>
               <RunOnce
                 inputs={inputs}
                 onInputsChange={setInputs}
@@ -527,8 +563,8 @@ const TextGeneration = () => {
           </div>
 
           {/* copyright */}
-          <div className='fixed left-8 bottom-4  flex space-x-2 text-gray-400 font-normal text-xs'>
-            <div className="">© {APP_INFO.copyright || APP_INFO.title} {(new Date()).getFullYear()}</div>
+          <div className='mt-4 flex shrink-0 items-center space-x-2 border-t border-white/10 pt-3 text-[11px] font-normal text-gray-600'>
+            <div>© {APP_INFO.copyright || APP_INFO.title} {(new Date()).getFullYear()}</div>
             {APP_INFO.privacy_policy && (
               <>
                 <div>·</div>
@@ -546,7 +582,7 @@ const TextGeneration = () => {
 
         {/* Result */}
         {isPC && (
-          <div className='grow h-full'>
+          <div className='relative z-10 grow h-full p-4 pl-4'>
             {renderResWrap}
           </div>
         )}
@@ -555,7 +591,7 @@ const TextGeneration = () => {
           <div
             className={cn('fixed z-50 inset-0', isTablet ? 'pl-[128px]' : 'pl-6')}
             style={{
-              background: 'rgba(35, 56, 118, 0.2)',
+              background: 'rgba(0, 0, 0, 0.6)',
             }}
           >
             {renderResWrap}

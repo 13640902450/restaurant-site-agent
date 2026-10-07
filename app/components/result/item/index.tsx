@@ -42,7 +42,7 @@ export const SimpleBtn = ({ className, isDisabled, onClick, children }: {
   children: React.ReactNode
 }) => (
   <div
-    className={cn(className, isDisabled ? 'border-gray-100 text-gray-300' : 'border-gray-200 text-gray-700 cursor-pointer hover:border-gray-300 hover:shadow-sm', 'flex items-center h-7 px-3 rounded-md border text-xs  font-medium')}
+    className={cn(className, isDisabled ? 'border-white/5 text-gray-600' : 'border-white/15 text-gray-300 cursor-pointer hover:border-white/30 hover:bg-white/5', 'flex items-center h-7 px-3 rounded-md border text-xs  font-medium')}
     onClick={() => !isDisabled && onClick?.()}
   >
     {children}
@@ -104,12 +104,12 @@ const GenerationItem: FC<IGenerationItemProps> = ({
   const mainStyle = (() => {
     const res: React.CSSProperties = !isTop
       ? {
-        background: depth % 2 === 0 ? 'linear-gradient(90.07deg, #F9FAFB 0.05%, rgba(249, 250, 251, 0) 99.93%)' : '#fff',
+        background: depth % 2 === 0 ? 'linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0))' : 'transparent',
       }
       : {}
 
     if (hasChild)
-      res.boxShadow = '0px 1px 2px rgba(16, 24, 40, 0.05)'
+      res.boxShadow = '0 1px 2px rgba(0, 0, 0, 0.3)'
 
     return res
   })()
@@ -121,10 +121,10 @@ const GenerationItem: FC<IGenerationItemProps> = ({
   }, [isLoading])
 
   return (
-    <div className={cn(className, isTop ? `rounded-xl border ${!isError ? 'border-gray-200 bg-white' : 'border-[#FECDCA] bg-[#FEF3F2]'} ` : 'rounded-br-xl !mt-0')}
+    <div className={cn(className, isTop ? `rounded-2xl border ${!isError ? 'border-white/10 bg-white/[0.03] backdrop-blur-sm' : 'border-rose-500/30 bg-rose-500/[0.08]'} ` : 'rounded-br-xl !mt-0')}
       style={isTop
         ? {
-          boxShadow: '0px 1px 2px rgba(16, 24, 40, 0.05)',
+          boxShadow: '0 1px 2px rgba(0, 0, 0, 0.4)',
         }
         : {}}
     >
@@ -138,8 +138,8 @@ const GenerationItem: FC<IGenerationItemProps> = ({
             style={mainStyle}
           >
             {(isTop && taskId) && (
-              <div className='mb-2 text-gray-500 border border-gray-200 box-border flex items-center rounded-md italic text-[11px] pl-1 pr-1.5 font-medium w-fit group-hover:opacity-100'>
-                <HashtagIcon className='w-3 h-3 text-gray-400 fill-current mr-1 stroke-current stroke-1' />
+              <div className='mb-2 text-gray-500 border border-white/10 box-border flex items-center rounded-md italic text-[11px] pl-1 pr-1.5 font-medium w-fit group-hover:opacity-100'>
+                <HashtagIcon className='w-3 h-3 text-gray-500 fill-current mr-1 stroke-current stroke-1' />
                 {taskId}
               </div>)
             }
@@ -200,7 +200,7 @@ const GenerationItem: FC<IGenerationItemProps> = ({
                                 rating: 'like',
                               })
                             }}
-                            className='flex w-6 h-6 items-center justify-center rounded-md cursor-pointer hover:bg-gray-100'>
+                            className='flex w-6 h-6 items-center justify-center rounded-md cursor-pointer hover:bg-white/10'>
                             <HandThumbUpIcon width={16} height={16} />
                           </div>
                           <div
@@ -209,7 +209,7 @@ const GenerationItem: FC<IGenerationItemProps> = ({
                                 rating: 'dislike',
                               })
                             }}
-                            className='flex w-6 h-6 items-center justify-center rounded-md cursor-pointer hover:bg-gray-100'>
+                            className='flex w-6 h-6 items-center justify-center rounded-md cursor-pointer hover:bg-white/10'>
                             <HandThumbDownIcon width={16} height={16} />
                           </div>
                         </>

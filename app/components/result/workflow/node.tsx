@@ -38,7 +38,7 @@ const NodePanel: FC<Props> = ({ nodeInfo, hideInfo = false }) => {
 
   return (
     <div className={cn('px-4 py-1', hideInfo && '!p-0')}>
-      <div className={cn('group transition-all bg-white border border-gray-100 rounded-2xl shadow-xs hover:shadow-md', hideInfo && '!rounded-lg')}>
+      <div className={cn('group transition-all bg-white/[0.04] border border-white/10 rounded-2xl shadow-xs hover:border-white/20 hover:bg-white/[0.06]', hideInfo && '!rounded-lg')}>
         <div
           className={cn(
             'flex items-center pl-[6px] pr-3 cursor-pointer',
@@ -50,7 +50,7 @@ const NodePanel: FC<Props> = ({ nodeInfo, hideInfo = false }) => {
 
           <BlockIcon size={hideInfo ? 'xs' : 'sm'} className={cn('shrink-0 mr-2', hideInfo && '!mr-1')} type={nodeInfo.node_type} toolIcon={nodeInfo.extras?.icon || nodeInfo.extras} />
           <div className={cn(
-            'grow text-gray-700 text-[13px] leading-[16px] font-semibold truncate',
+            'grow text-gray-200 text-[13px] leading-[16px] font-semibold truncate',
             hideInfo && '!text-xs',
           )} title={nodeInfo.title}>{nodeInfo.title}</div>
           {nodeInfo.status !== 'running' && !hideInfo && (

@@ -11,7 +11,7 @@ import Toast from '@/app/components/base/toast'
 import { sendCompletionMessage, sendWorkflowMessage, updateFeedback } from '@/service'
 import type { Feedbacktype, PromptConfig, VisionFile, VisionSettings, WorkflowProcess } from '@/types/app'
 import { NodeRunningStatus, TransferMethod, WorkflowRunningStatus } from '@/types/app'
-import Loading from '@/app/components/base/loading'
+import { ArrowPathIcon } from '@heroicons/react/24/outline'
 import { sleep } from '@/utils'
 
 export type IResultProps = {
@@ -260,9 +260,14 @@ const Result: FC<IResultProps> = ({
     }
   }
 
+  // 每次“开始评估”只触发一次请求：Result 面板挂载时 controlSend 已有值，
+  // 开发环境下 StrictMode 会重复执行挂载 effect，这里用 ref 去重避免重复运行工作流。
+  const handledControlSendRef = useRef(0)
   useEffect(() => {
-    if (controlSend)
+    if (controlSend && controlSend !== handledControlSendRef.current) {
+      handledControlSendRef.current = controlSend
       handleSend()
+    }
   }, [controlSend])
 
   useEffect(() => {
@@ -293,8 +298,33 @@ const Result: FC<IResultProps> = ({
       {!isCallBatchAPI && (
         (isResponsing && !completionRes)
           ? (
-            <div className='flex h-full w-full justify-center items-center'>
-              <Loading type='area' />
+            <div className='animate-fade-up flex h-full w-full items-center justify-center py-6'>
+              <div className='w-full max-w-md'>
+                <div className='flex items-center gap-3'>
+                  <div className='brand-gradient-bg flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-lg shadow-amber-900/40'>
+                    <ArrowPathIcon className='h-5 w-5 animate-spin text-white' />
+                  </div>
+                <div className='text-left'>
+                    <div className='text-sm font-semibold text-gray-100'>正在评估点位可行性…</div>
+                    <div className='mt-0.5 text-[11px] text-gray-500'>Agent 正在逐步推理，请稍候</div>
+                  </div>
+                </div>
+
+                <div className='mt-6 space-y-3'>
+                  {[100, 86, 93, 68].map((w, i) => (
+                    <div key={i} className='skeleton h-3 rounded-full' style={{ width: `${w}%` }} />
+                  ))}
+                </div>
+
+                <div className='mt-6 space-y-2.5'>
+                  {['解析经营数据', '测算成本与盈亏平衡', '评估客流与商圈竞品', '生成结论与建议'].map((step, i) => (
+                    <div key={step} className={cn('flex items-center gap-2 text-xs text-gray-500', i === 0 && 'text-amber-300')}>
+                      <span className={cn('h-1.5 w-1.5 rounded-full bg-white/20', i === 0 && 'animate-pulse-dot bg-amber-400')} />
+                      {step}
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>)
           : (
             <>

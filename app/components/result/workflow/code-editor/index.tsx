@@ -53,20 +53,20 @@ const CodeEditor: FC<Props> = ({
     })
 
     monaco.editor.defineTheme('blur-theme', {
-      base: 'vs',
+      base: 'vs-dark',
       inherit: true,
       rules: [],
       colors: {
-        'editor.background': '#F2F4F7',
+        'editor.background': '#101218',
       },
     })
 
     monaco.editor.defineTheme('focus-theme', {
-      base: 'vs',
+      base: 'vs-dark',
       inherit: true,
       rules: [],
       colors: {
-        'editor.background': '#ffffff',
+        'editor.background': '#14161C',
       },
     })
   }

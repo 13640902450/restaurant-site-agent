@@ -31,13 +31,13 @@ const WorkflowProcessItem = ({
 
   const background = useMemo(() => {
     if (running && !collapse)
-      return 'linear-gradient(180deg, #E1E4EA 0%, #EAECF0 100%)'
+      return 'linear-gradient(180deg, rgba(240, 160, 50, 0.14) 0%, rgba(240, 160, 50, 0.04) 100%)'
 
     if (succeeded && !collapse)
-      return 'linear-gradient(180deg, #ECFDF3 0%, #F6FEF9 100%)'
+      return 'linear-gradient(180deg, rgba(16, 185, 129, 0.12) 0%, rgba(16, 185, 129, 0.03) 100%)'
 
     if (failed && !collapse)
-      return 'linear-gradient(180deg, #FEE4E2 0%, #FEF3F2 100%)'
+      return 'linear-gradient(180deg, rgba(244, 63, 94, 0.12) 0%, rgba(244, 63, 94, 0.03) 100%)'
   }, [running, succeeded, failed, collapse])
 
   useEffect(() => {
@@ -47,9 +47,9 @@ const WorkflowProcessItem = ({
   return (
     <div
       className={cn(
-        'mb-2 rounded-xl border-[0.5px] border-black/[0.08]',
+        'mb-2 rounded-xl border-[0.5px] border-white/10',
         collapse ? 'py-[7px]' : hideInfo ? 'pt-2 pb-1' : 'py-2',
-        collapse && (!grayBg ? 'bg-white' : 'bg-gray-50'),
+        collapse && (!grayBg ? 'bg-white/[0.03]' : 'bg-white/[0.02]'),
         hideInfo ? 'mx-[-8px] px-1' : 'w-full px-3',
       )}
       style={{
@@ -78,7 +78,7 @@ const WorkflowProcessItem = ({
             <AlertCircle className='shrink-0 mr-1 w-3 h-3 text-[#F04438]' />
           )
         }
-        <div className='grow text-xs font-medium text-gray-700 leading-[18px]'>Workflow Process</div>
+        <div className='grow text-xs font-medium text-gray-300 leading-[18px]'>工作流进度</div>
         <ChevronRight className={`'ml-1 w-3 h-3 text-gray-500' ${collapse ? '' : 'rotate-90'}`} />
       </div>
       {
